@@ -9,7 +9,7 @@
     <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
     <script src="https://unpkg.com/ml5@1/dist/ml5.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 </head>
 
 <body>
@@ -19,18 +19,59 @@
     <div class="topnav">
         <a href="/index.html">Home</a>
     </div>
+    <div class="headline">
+        <h2>Beispiele richtige Bilderkennung</h2>
+    </div>
     <div class="row">
-        <div class="column">
+        <div class="columnImg">
             <img id="dog" src="images/hund.jpg" />
         </div>
         <div class="column" id="dogResult">
+            <canvas id="dogChart"></canvas>
         </div>
+
     </div>
     <div class="row">
-        <div class="column">
+        <div class="columnImg">
             <img id="cat" src="images/katze.jpg" />
         </div>
         <div class="column" id="catResult">
+            <canvas id="catChart"></canvas>
+        </div>
+    </div>
+    <div class="row">
+        <div class="columnImg">
+            <img id="pizza" src="images/pizza.jpg" />
+        </div>
+        <div class="column" id="pizzaResult">
+            <canvas id="pizzaChart"></canvas>
+        </div>
+    </div>
+    <div class="headline">
+        <h2>Beispiele falsche Bilderkennung</h2>
+    </div>
+    <div class="row">
+        <div class="columnImg">
+            <img id="nero" src="images/nero.jpg" />
+        </div>
+        <div class="column" id="neroResult">
+            <canvas id="neroChart"></canvas>
+        </div>
+    </div>
+    <div class="row">
+        <div class="columnImg">
+            <img id="dart" src="images/dart.jpg" />
+        </div>
+        <div class="column" id="dartResult">
+            <canvas id="dartChart"></canvas>
+        </div>
+    </div>
+    <div class="row">
+        <div class="columnImg">
+            <img id="pancake" src="images/pancake.jpg" />
+        </div>
+        <div class="column" id="pancakeResult">
+            <canvas id="pancakeChart"></canvas>
         </div>
     </div>
     <script src='sketch.js'></script>
