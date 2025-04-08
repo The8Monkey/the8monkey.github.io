@@ -1,16 +1,39 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <title>Bilderkennung</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <!-- <link rel='stylesheet' type='text/css' media='screen' href='main.css'> -->
+    <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
     <script src="https://unpkg.com/ml5@1/dist/ml5.js"></script>
-    
+
 </head>
+
 <body>
+    <div class="header">
+        <h1>Bilderkennung mit ml5</h1>
+    </div>
+    <div class="topnav">
+        <a href="/index.html">Home</a>
+    </div>
+    <div class="row">
+        <div class="column">
+            <img id="dog" src="images/hund.jpg" />
+        </div>
+        <div class="column" id="dogResult">
+        </div>
+    </div>
+    <div class="row">
+        <div class="column">
+            <img id="cat" src="images/katze.jpg" />
+        </div>
+        <div class="column" id="catResult">
+        </div>
+    </div>
     <script src='sketch.js'></script>
 </body>
+
 </html>

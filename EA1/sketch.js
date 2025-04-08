@@ -1,30 +1,37 @@
 let classifier;
-let img;
+// let img;
 let label = "";
 let confidence = "";
 
 function preload() {
     classifier = ml5.imageClassifier("MobileNet");
-    img = loadImage("images/hund.jpg");
+    // img = loadImage("images/hund.jpg");
 }
 
 function setup() {
-    createCanvas(400, 400);
-    classifier.classify(img, gotResult);
-    image(img, 0, 0, width, height);
+    const imageArray = document.querySelectorAll("img");
+    console.log(imageArray);
+    imageArray.forEach(img => {
+        classifier.classify(img).then(
+            (results) => {gotResult(results, img)}
+        )
+    });
+    // createCanvas(400, 400);
+    // classifier.classify(img, gotResult);
+    // image(img, 0, 0, width, height);
 }
 
 // Callback function for when classification has finished
-function gotResult(results) {
+function gotResult(results, img) {
     // The results are in an array ordered by confidence
     console.log(results);
+    console.log(img);
 
-    // Display the results on the canvas
-    fill(255);
-    stroke(0);
-    textSize(18);
-    label = "Label: " + results[0].label;
-    confidence = "Confidence: " + nf(results[0].confidence, 0, 2);
-    text(label, 10, 360);
-    text(confidence, 10, 380);
+    console.log(img.id);
+    results.forEach(result =>{
+        console.log(result);
+        let elem = document.createElement("p")
+        elem.innerHTML = "Ergebnis: " + result.label + " mit confidence: " + result.confidence; 
+        document.getElementById(img.id+"Result").appendChild(elem);
+    })
 }
