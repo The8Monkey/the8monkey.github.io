@@ -1,13 +1,21 @@
 "use strict";
 
 let classifier;
-// let img;
 let label = "";
 let confidence = "";
+let chart;
+const dropzone = document.getElementById("dropzone");
 
 const init = () => {
     preload();
     setup();
+    dropzone.addEventListener("drop", function (evt) {
+        let dt = evt.dataTransfer;
+        let file = dt.files[0];
+        if(file.type === 'image/png' || file.type === 'image/jpeg'){
+            handleFiles(file);
+        }
+    });
 };
 
 const preload = () => {
@@ -16,51 +24,28 @@ const preload = () => {
 
 const setup = () => {
     const imageArray = document.querySelectorAll("img");
-    console.log(imageArray);
-    imageArray.forEach((img) => {
+    imageArray.forEach((img) => {        
         classifier.classify(img).then((results) => {
-            gotResult(results, img);
+            createChart(img.id, results)
         });
     });
 };
 
-// Callback function for when classification has finished
-const gotResult = (results, img) => {
-    // The results are in an array ordered by confidence
-    // console.log(results);
-    // console.log(img);
-    // console.log(img.id);
-
-    // results.forEach((result) => {
-    //     console.log(result);
-    //     let elem = document.createElement("p");
-    //     elem.innerHTML =
-    //         'Ergebnis: <span class="big">' +
-    //         result.label +
-    //         '</span> mit confidence: <span class="big">' +
-    //         result.confidence +
-    //         "</span>";
-    //     document.getElementById(img.id + "Result").appendChild(elem);
-    // });
-    createChart(img.id, results);
-};
-
 const createChart = (id, results) => {
-    console.log(results);
-
-    console.log( results[0].label.split(",").concat("test") )
-
     let ctx = document.getElementById(id + "Chart").getContext("2d");
-    let chart = new Chart(ctx, {
-        // The type of chart we want to create
+    return new Chart(ctx, {
         type: "bar",
-
-        // The data for our dataset
         data: {
             labels: [
-                results[0].label.split(",").concat(Math.round(results[0].confidence * 100) + "%"),
-                results[1].label.split(",").concat(Math.round(results[1].confidence * 100) + "%"),
-                results[2].label.split(",").concat(Math.round(results[2].confidence * 100) + "%"),
+                results[0].label
+                    .split(",")
+                    .concat(Math.round(results[0].confidence * 100) + "%"),
+                results[1].label
+                    .split(",")
+                    .concat(Math.round(results[1].confidence * 100) + "%"),
+                results[2].label
+                    .split(",")
+                    .concat(Math.round(results[2].confidence * 100) + "%"),
             ],
             datasets: [
                 {
@@ -88,6 +73,39 @@ const createChart = (id, results) => {
             },
         },
     });
+};
+
+["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
+    dropzone.addEventListener(eventName, preventDefaults, false);
+});
+
+function preventDefaults(evt) {
+    evt.preventDefault();
+    evt.stopPropagation();
+}
+
+const handleFiles = (file) => {
+    console.log(file);
+    
+    previewFile(file);
+    document.getElementById("uploadRow").classList.remove("hidden");
+};
+
+const previewFile = (file) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = function () {
+        let img = document.createElement("img");
+        img.src = reader.result;
+        document.getElementById("preview").innerHTML = "";
+        document.getElementById("preview").append(img);
+        if(chart){
+            chart.destroy();
+        }
+        classifier.classify(img).then((results) => {   
+            chart = createChart("upload", results)
+        });
+    };
 };
 
 init();

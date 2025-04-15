@@ -45,17 +45,17 @@ body {
 /* Create three equal columns that floats next to each other */
 .columnImg {
     float: left;
-    width: 50%;
-    max-width: 600px;
+    width: 400px;
+    max-height: 400px;
     padding: 15px;
 }
 
 .column {
     float: left;
-    width: 50%;
+    width: 65%;
     padding: 15px;
+    padding-left: 2%;
 }
-
 
 /* Clear floats after the columns */
 .row::after {
@@ -65,9 +65,9 @@ body {
 }
 
 img {
-    width: 100%; /* you can use % */
-    height: auto;
-    max-width: 600px;
+    width: 400px;
+    height: 400px;
+    background-size: cover;
 }
 
 @media screen and (max-width: 600px) {
@@ -83,4 +83,65 @@ img {
 
 canvas {
     background-color: #ddd;
+    height: 400px !important;
+}
+
+#drop_zone {
+    border: 5px solid blue;
+    width: 400px;
+    height: 400px;
+}
+
+#dropzone {
+    border-top-color: var(--darkreader-border-cccccc, #3e4446);
+    border-right-color: var(--darkreader-border-cccccc, #3e4446);
+    border-bottom-color: var(--darkreader-border-cccccc, #3e4446);
+    border-left-color: var(--darkreader-border-cccccc, #3e4446);
+    border: 2px dashed #ccc;
+    border-radius: 20px;
+    max-width: 480px;
+    font-family: sans-serif;
+    margin: 100px auto;
+    padding: 20px;
+}
+
+.button:hover {
+    background: var(--darkreader-bg--me-highlight);
+}
+.button:hover {
+    background: var(--me-highlight);
+}
+.button {
+    display: inline-block;
+    padding: 10px;
+    background: salmon;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+#fileElem {
+    display: none;
+}
+
+#preview {
+    background-color: #ddd;
+    height: 400px;
+    width: 400px;
+}
+
+.hidden {
+    display: none;
+}
+
+.text {
+    font-size: 20px;
+    padding: 2%;
+    hyphens: auto; 
+	text-align: justify
+}
+
+a {
+    color: #4ebbfa;
 }

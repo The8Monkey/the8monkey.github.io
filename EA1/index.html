@@ -74,6 +74,56 @@
             <canvas id="pancakeChart"></canvas>
         </div>
     </div>
+    <div class="headline">
+        <h2>Eigenes Bild Uploaden</h2>
+    </div>
+    <div class="row hidden" id="uploadRow">
+        <div class="columnImg">
+            <div id="preview"></div>
+        </div>
+        <div class="column" id="uploadResult">
+            <canvas id="uploadChart"></canvas>
+        </div>
+    </div>
+    <div id="dropzone">
+        <form class="form">
+            <p class="dropper">Eine Bild hierhin ziehen oder mit dem Button laden </p>
+            <input type="file" id="fileElem" accept="image/*" onchange="handleFiles(this.files[0])">
+            <label class="button" for="fileElem">Datei wählen</label>
+        </form>
+    </div>
+    <div class="headline">
+        <h2>Documentation</h2>
+    </div>
+    <div class="text">
+        Es ist zu sehen wie verschieden die Ergebnisse ausfallen.
+        Bei dem Hund und der Pizaa wurden die Bilder richtig erkannt wobei beim Hund sogar die Rasse richtig erkannt
+        wird.
+        Die Katze wird zwar auch erkannt allerdings mit einer geringen Confidence (4% beim Ersteller der Seite) obwohl
+        sie im Mittelpunkt steht.
+        Das Bild wird trozdem unter richtige Bilderkennunng geführt weil der Karton richtig erkannt wird. <br />
+        Die schwarze Katze wird nicht erkannt, hier wird eher ein Hund oder ein Schnauzer erkannt was an der Form liegen
+        kann wie die Katze liegt.
+        Auch die Dartscheibe wird nicht erkannt was daran liegen könnte das nur ein Ausschnitt ist.
+        Die Pfannkuchen werden auch als Cheesburger erkannt, was an der Form der Stapelung liegen könnte da dies nach
+        einem Burger aussieht.
+    </div>
+    <div class="text">
+        Technik: Es wurden Chart.js, p5.js und ml5.js genutzt.
+    </div>
+    <div class="text">
+        Fachlich: Es wurde wie in der Aufgabe beschieben das Tutorial von <a href="https://docs.ml5js.org/#/"
+            target="_blank">https://docs.ml5js.org/#/</a> nachvollzogen und
+        erweitert.
+        Es wurden eigene Bilder genutzt und geschaut was das Result sagt bis 3 Bilder für richtig und flasch gefunden
+        wurden.
+        Anschließend wurden die Resultate als Diagramm dargestellt.
+        Dies wurde mitteld der Dokuemtation von Chart.js gemacht
+        (<a href="https://www.chartjs.org/docs/latest/samples/bar/border-radius.html"
+            target="_blank">https://www.chartjs.org/docs/latest/samples/bar/border-radius.html</a>,
+        <a href="https://www.chartjs.org/docs/latest/general/data-structures.html"
+            target="_blank">https://www.chartjs.org/docs/latest/general/data-structures.html</a>)
+    </div>
     <script src='sketch.js'></script>
 </body>
 
