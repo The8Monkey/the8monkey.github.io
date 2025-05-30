@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regression</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-vis"></script>
+</head>
+
+<body>
+    <div class="header">
+        <h1>Regression mit FFNN</h1>
+    </div>
+    <div class="topnav">
+        <a href="/index.html">Home</a>
+    </div>
+    <h1>Resultate, Visualisierung und Layout</h1>
+    <h2>Datensätze</h2>
+    <div class="row">
+        <div class="col">
+            <div class="loader"></div>
+            <div class="chart-container" id="r1-left"></div>
+            <div class="loss-text">R1 links: Datensatz ohne Rauschen</div>
+        </div>
+        <div class="col">
+            <div class="loader"></div>
+            <div class="chart-container" id="r1-right"></div>
+            <div class="loss-text">R1 rechts: Datensatz mit Rauschen</div>
+        </div>
+    </div>
+    <h2>Vorhersagen des Modells ohne Rauschen </h2>
+    <div class="row">
+        <div class="col">
+            <div class="loader"></div>
+            <div class="chart-container" id="r2-left"></div>
+            <div class="loss-text" id="r2-left-loss"></div>
+        </div>
+        <div class="col">
+            <div class="loader"></div>
+            <div class="chart-container" id="r2-right"></div>
+            <div class="loss-text" id="r2-right-loss"></div>
+        </div>
+    </div>
+    <h2>Vorhersagen des Best-Fit Modells</h2>
+    <div class="row">
+        <div class="col">
+            <div class="loader"></div>
+            <div class="chart-container" id="r3-left"></div>
+            <div class="loss-text" id="r3-left-loss"></div>
+        </div>
+        <div class="col">
+            <div class="loader"></div>
+            <div class="chart-container" id="r3-right"></div>
+            <div class="loss-text" id="r3-right-loss"></div>
+        </div>
+    </div>
+    <h2>Vorhersagen des Over-Fit Modells</h2>
+    <div class="row">
+        <div class="col">
+            <div class="loader"></div>
+            <div class="chart-container" id="r4-left"></div>
+            <div class="loss-text" id="r4-left-loss"></div>
+        </div>
+        <div class="col">
+            <div class="loader"></div>
+            <div class="chart-container" id="r4-right"></div>
+            <div class="loss-text" id="r4-right-loss"></div>
+        </div>
+    </div>
+
+
+    <hr>
+
+    <h1>Daten selbst erzeugen</h1>
+
+    <div id="control-panel">
+        <h2>Entwicklungszyklus Steuerung</h2>
+        <div class="buttonrow">
+            <button id="create-dataset-btn">Datensatz erzeugen</button>
+            <!-- <button id="load-dataset-btn">Datensatz laden</button> -->
+
+            <div id="dropzone">
+                <form class="form">
+                    <label>Datensatz laden: <input type="file" id="upload-dataset-file" accept=".json"></label>
+                </form>
+            </div>
+            <button id="save-dataset-btn">Datensatz speichern</button>
+        </div>
+        <div id="dataset-status"></div>
+
+        <h2>Modell Parameter & Training</h2>
+        <div class="buttonrow">
+            <label>Anzahl Hidden Layers: <input type="number" id="num-hidden-layers" value="2" min="1"></label>
+            <label>Neuronen pro Layer: <input type="number" id="units-per-layer" value="100" min="1"></label>
+            <!-- <label>Aktivierungsfunktion (hidden): <input type="text" id="activation" value="relu"></label> -->
+            <label>Lernrate: <input type="number" step="0.001" id="learning-rate" value="0.01"></label>
+            <label>Epochen: <input type="number" id="epochs" value="100" min="1"></label>
+            <button id="train-model-btn">Modell trainieren</button>
+        </div>
+        <div id="training-status"></div>
+
+        <div class="buttonrow">
+            <div id="dropzone">
+                <form class="form">
+                    <label>Modell laden: <input type="file" id="upload-model-files" accept=".json,.bin"
+                            multiple></label>
+                </form>
+            </div>
+            <!-- <button id="load-model-btn">Modell laden</button> -->
+            <button id="save-model-btn">Trainiertes Modell speichern</button>
+            <button id="test-model-btn">Modell testen</button>
+        </div>
+        <div id="model-status"></div>
+
+        <div class="row">
+            <div class="col">
+                <div class="chart-container" id="train-chart"></div>
+                <div class="loss-text">Model Training</div>
+            </div>
+            <div class="col">
+                <div class="chart-container" id="test-chart"></div>
+                <div class="loss-text">Model Test</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="discussion-documentation" style="border:1px solid #ccc; padding:10px; margin-top:30px;">
+        <h2>Erklärung zu den Parametern des Modells</h2>
+        <p>
+            <b>Anzahl Hidden Layers:</b> Die Anzahl der Hidden Layers bestimmt, wie viele verborgene Schichten
+            zwischen Eingabeschicht und Ausgabeschicht im Netzwerk existieren. Mehr Hidden Layers ermöglichen es,
+            komplexere Muster zu lernen und tiefere Zusammenhänge darzustellen, erhöhen aber auch die Schwierigkeit
+            des Trainings. Zu viele Schichten können zudem das Risiko von Überanpassung (Overfitting) erhöhen und
+            längere Trainingszeiten verursachen.
+        </p>
+        <p>
+            <b>Neuronen pro Layer:</b> Die Anzahl der Neuronen pro Layer gibt an, wie viele Recheneinheiten in jeder
+            verborgenen Schicht vorhanden sind, die zur Extraktion von Merkmalen genutzt werden. Mehr Neuronen
+            können die Fähigkeit des Modells verbessern, feine Details und komplexe Muster zu erkennen, führen aber
+            auch zu höherem Rechenaufwand und einem größeren Risiko von Überanpassung. Weniger Neuronen reduzieren
+            den Rechenaufwand, können aber dazu führen, dass das Modell nicht ausreichend komplexe Zusammenhänge
+            lernt.
+        </p>
+        <p>
+            <b>Lernrate:</b> Die Lernrate steuert, wie stark die Gewichte des Modells bei jedem Trainingsschritt
+            angepasst
+            werden. Eine zu hohe Lernrate kann dazu führen, dass das Modell über das optimale Ergebnis hinausschießt
+            und instabil wird, während eine zu niedrige Lernrate das Training erheblich verlangsamen oder in lokalen
+            Minima steckenbleiben lassen kann. Die richtige Wahl der Lernrate ist daher entscheidend für eine
+            effiziente und robuste Modellanpassung.
+        </p>
+        <p>
+            <b>Epochen:</b> Epochen geben an, wie oft der gesamte Trainingsdatensatz dem Modell während des
+            Trainings vorgestellt wird. Mit jeder Epoche passt das Modell seine Gewichte an, um die Fehler zu
+            minimieren, was zu besseren Ergebnissen führen kann, solange das Training rechtzeitig gestoppt wird,
+            bevor Überanpassung einsetzt. Zu wenige Epochen können zu einem unzureichend trainierten Modell führen,
+            während zu viele Epochen das Risiko von Überanpassung erhöhen.
+        </p>
+        <h2>Diskussion</h2>
+        <h3>Technische Dokumentation</h3>
+        <ul>
+            <li><strong>TensorFlow.js:</strong> Wird verwendet, um neuronale Netzwerke zu definieren, zu trainieren und
+                Modelle zu speichern bzw. zu laden.</li>
+            <li><strong>tfjs-vis:</strong> Dient zur Visualisierung der Datensätze, Trainingsverläufe und
+                Vorhersageergebnisse in interaktiven Scatterplots.</li>
+            <li>Die Datei‑basierte Speicherung ermöglicht es dem Nutzer, Datensätze und Modelle lokal als JSON und
+                Binärdateien zu sichern und wieder zu laden.</li>
+        </ul>
+        <h3>Fachliche Dokumentation</h3>
+        <p>
+            Zur Lösung wurde ein Datensatz basierend auf einer mathematischen Ideal‑Funktion (yFunction) erzeugt, dem
+            gezielt Gaussian Noise hinzugefügt wurde, um reale Messbedingungen zu simulieren. Anschließend wurde ein
+            neuronales Netzwerk (mit konfigurierbarer Anzahl an Hidden Layers, Neuronen pro Layer, Lernrate und Epochen)
+            trainiert, dessen Vorhersagen visuell mit den verrauschten (Actual) und idealen (Ground Truth) Werten
+            verglichen werden. Die Implementierung folgt einem modularen Ansatz, bei dem Daten-Erzeugung, Training und
+            Visualisierung klar voneinander getrennt sind – gestützt auf fundierte Quellen wie die
+            TensorFlow.js‑Dokumentation, um eine nachvollziehbare und flexible Lösung für den kontinuierlichen
+            Entwicklungszyklus bereitzustellen.
+        </p>
+    </div>
+
+    <script src='main.js'></script>
+</body>
+
+</html>

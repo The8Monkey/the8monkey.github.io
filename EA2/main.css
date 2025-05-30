@@ -1,0 +1,153 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background-color: #0d0e0dc7;
+    color: #ffffff;
+}
+
+.header {
+    background-color: #0c4d06c0;
+    padding: 20px;
+    text-align: center;
+}
+
+.headline {
+    background-color: #0a1409c0;
+    padding: 5px;
+    text-align: center;
+}
+
+/* Style the top navigation bar */
+.topnav {
+    overflow: hidden;
+    background-color: #333;
+}
+
+/* Style the topnav links */
+.topnav a {
+    float: left;
+    display: block;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+/* Change color on hover */
+.topnav a:hover {
+    background-color: #ddd;
+    color: black;
+}
+
+body {
+    font-family: Arial, sans-serif;
+}
+h1,
+h2 {
+    text-align: center;
+}
+
+.row {
+    display: flex;
+    margin: 0.5%;
+    margin-bottom: 30px;
+    margin-left: -0.5%;
+}
+
+.col {
+    flex: 1 1 50%; /* Flex-Item nimmt maximal 50% der Zeilenbreite ein */
+    box-sizing: border-box;
+    padding: 10px;
+    min-width: 300px; /* Optional: Minimale Breite, damit bei sehr schmalen Bildschirmen automatisch umgebrochen wird */
+}
+
+.chart-container {
+    width: 100%;
+    max-width: 100%;
+    /* border: 1px solid #ccc; */
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.loss-text {
+    text-align: center;
+    margin-top: 5px;
+    font-weight: bold;
+}
+
+#drop_zone {
+    border: 5px solid blue;
+    width: 400px;
+    height: 400px;
+}
+
+#dropzone {
+    border-top-color: var(--darkreader-border-cccccc, #3e4446);
+    border-right-color: var(--darkreader-border-cccccc, #3e4446);
+    border-bottom-color: var(--darkreader-border-cccccc, #3e4446);
+    border-left-color: var(--darkreader-border-cccccc, #3e4446);
+    border: 2px dashed #ccc;
+    border-radius: 20px;
+    max-width: 480px;
+    font-family: sans-serif;
+    padding: 20px;
+}
+
+button:hover {
+    background: var(--darkreader-bg--me-highlight);
+}
+
+button:hover {
+    background: var(--me-highlight);
+}
+
+button {
+    display: inline-block;
+    padding: 10px;
+    margin: 10px;
+    background: rgb(47, 48, 47);
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.buttonrow {
+    display: flex;
+    margin: 0.5%;
+    margin-bottom: 30px;
+}
+
+#dataset-status,
+#training-status,
+#model-status {
+    font-size: xx-large;
+    margin-left: 2%;
+    color: orange;
+}
+
+.loader {
+    border: 16px solid #f3f3f3; /* Light grey */
+    border-top: 16px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+    justify-self: center;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+p{
+    margin: 1%;
+}
