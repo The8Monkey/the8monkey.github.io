@@ -1,6 +1,7 @@
 let model = null;
 let tokenizer = null;
 const k = 5;
+let stopFlag = false;
 
 const options = {
     scales: {
@@ -220,7 +221,6 @@ const acc_t1 = [
     0.9760863184928894, 0.9760863184928894, 0.9775444865226746,
     0.9781277775764465,
 ];
-
 const acc_t2 = [
     0.056432124227285385, 0.09111584722995758, 0.1260838657617569,
     0.1687277853488922, 0.21719971299171448, 0.2729211151599884,
@@ -329,7 +329,6 @@ const acc_t4 = [
     0.47933995723724365, 0.4772086441516876, 0.4745960533618927,
     0.4762461185455322,
 ];
-
 const epochs = loss_t1.map((_, i) => i + 1);
 
 const loadModel = async () => {
@@ -460,57 +459,172 @@ const createLossChart = (number, loss_data) => {
     });
 };
 
-const main = async () => {
-    await loadModel();
-    const tokenizer = await loadTokens();
+function getWordId(word, tokenMap) {
+    // Durch die Einträge loopen
+    for (const [id, token] of Object.entries(tokenMap)) {
+        if (token === word) {
+            return parseInt(id);
+        }
+    }
+    // Falls nicht gefunden
+    return null;
+}
 
-    document.getElementById("genBtn").addEventListener("click", async () => {
-        let textarea = document.getElementById("textarea");
-        console.log(textarea.value);
+async function prepareInput(text, tokenizer, sequenceLength) {
+    const tokens = text.trim().split(/\s+/);
+    console.log(tokens);
+
+    if (tokenizer == null) {
+        tokenizer = await loadTokens();
+    }
+    const tokenIds = tokens.map((word) => getWordId(word, tokenizer.indexWord));
+    console.log(tokenIds);
+
+    // Falls zu lang: nimm die letzten `sequenceLength` Token
+    if (tokenIds.length > sequenceLength) {
+        return tokenIds.slice(-sequenceLength);
+    }
+
+    // Falls zu kurz: mit 0er-Werten von vorne auffüllen
+    const padding = Array(sequenceLength - tokenIds.length).fill(0);
+    return [...padding, ...tokenIds];
+}
+
+const makePrediction = async (text) => {
+    if (text.split(" ").length < 5) {
+        document.getElementById("error").innerText =
+            "Bitte geben Sie 5 oder mehr Wörter ein.";
+    } else {
+        document.getElementById("error").innerText = "";
+
+        const inputIndices = await prepareInput(text, tokenizer, 6);
+        console.log(inputIndices);
+
+        const inputTensor = tf.tensor2d([inputIndices]).cast("int32");
+
+        const prediction = model.predict(inputTensor);
+        const probabilities = prediction.arraySync()[0]; // JS-Array mit Wahrscheinlichkeiten
+
+        // // Indizes 0...N in ein Array
+        const allIndices = probabilities.map((_, i) => i);
+
+        // // Sortiere nach Wahrscheinlichkeit absteigend
+        const sorted = allIndices.sort(
+            (a, b) => probabilities[b] - probabilities[a]
+        );
+
+        // // Nimm die Top-k Indizes
+        const topK = sorted.slice(0, k);
+        console.log(topK);
+
+        // // Gib Ergebnis als Wort + Wahrscheinlichkeit zurück
+        const topKWords = topK.map((index) => ({
+            token: tokenizer.indexWord[index],
+            probability: probabilities[index].toFixed(4),
+        }));
+        printTable(topKWords);
+        return topKWords;
+    }
+};
+
+const printTable = (data) => {
+    if (document.getElementById("predictionText").childNodes.length > 0) {
+        document.getElementById("predictionText").innerHTML = "";
+    }
+
+    const table = document.createElement("table");
+    table.border = "1";
+    table.style.borderCollapse = "collapse";
+    table.style.margin = "20px auto";
+    table.style.fontFamily = "sans-serif";
+
+    // Tabellenkopf
+    const header = table.insertRow();
+    ["Platz", "Token", "Wahrscheinlichkeit"].forEach((text) => {
+        const th = document.createElement("th");
+        th.textContent = text;
+        th.style.padding = "8px";
+        th.style.backgroundColor = "#2b2323ff";
+        header.appendChild(th);
     });
 
-    const reverseTokenizer = Object.fromEntries(
-        Object.entries(tokenizer.indexWord).map(([word, idx]) => [idx, word])
-    );
-    // 37, 2734, 2728, 694, 519
-    const inputText = "die Mundöffnung und die damit"; //zusammenhängende
-    const tokens = inputText.split(/\s+/); // sehr einfache Wortteilung
+    // Datenzeilen
+    data.forEach((item, index) => {
+        const row = table.insertRow();
+        const cells = [
+            index + 1,
+            item.token,
+            parseFloat(item.probability).toFixed(4),
+        ];
+        cells.forEach((cellData) => {
+            const cell = row.insertCell();
+            cell.textContent = cellData;
+            cell.style.padding = "6px";
+            cell.style.textAlign = "center";
+        });
+        row.onclick = () => {
+            console.log(item.token);
+            const textarea = document.getElementById("textarea");
 
-    const inputIndices = tokens.map(
-        (t) => tokenizer.indexWord[t] ?? tokenizer.indexWord["<unk>"]
-    );
+            const alterText = textarea.value;
+            const neuerText = alterText.trim() + " " + item.token;
+            textarea.value = neuerText;
+            makePrediction(textarea.value.toLowerCase());
+        };
+    });
 
-    const maxLength = 6;
-    const padded = [
-        ...Array(maxLength - inputIndices.length).fill(0),
-        ...inputIndices,
-    ];
+    document.getElementById("predictionText").appendChild(table);
+};
 
-    const inputTensor = tf.tensor2d([padded]).cast("int32");
+const getTextAndPredict = async () => {
+    const textarea = document.getElementById("textarea");
+    const words = await makePrediction(textarea.value.toLowerCase());
+    const neuerText =
+        textarea.value.toLowerCase().trim() + " " + words[0].token;
+    textarea.value = neuerText;
+    makePrediction(textarea.value.toLowerCase());
+};
 
-    const prediction = model.predict(inputTensor);
-    const probabilities = prediction.arraySync()[0]; // JS-Array mit Wahrscheinlichkeiten
+function sleep(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
-    // // Indizes 0...N in ein Array
-    const allIndices = probabilities.map((_, i) => i);
+const main = async () => {
+    await loadModel();
+    tokenizer = await loadTokens();
 
-    // // Sortiere nach Wahrscheinlichkeit absteigend
-    const sorted = allIndices.sort(
-        (a, b) => probabilities[b] - probabilities[a]
-    );
+    document.getElementById("genBtn").addEventListener("click", async () => {
+        const textarea = document.getElementById("textarea");
+        makePrediction(textarea.value.toLowerCase());
+    });
 
-    // // Nimm die Top-k Indizes
-    const topK = sorted.slice(0, k);
-    console.log(topK);
-    console.log(tokenizer.indexWord[topK[0]]);
+    document
+        .getElementById("nextBtn")
+        .addEventListener("click", async () => {});
 
-    // // Gib Ergebnis als Wort + Wahrscheinlichkeit zurück
-    const topKWords = topK.map((index) => ({
-        token: tokenizer.indexWord[index],
-        probability: probabilities[index].toFixed(4),
-    }));
+    document.getElementById("autoBtn").addEventListener("click", async () => {
+        const textarea = document.getElementById("textarea");
+        const text = textarea.value.toLowerCase();
+        if (text.split(" ").length < 5) {
+            document.getElementById("error").innerText =
+                "Bitte geben Sie 5 oder mehr Wörter ein.";
+        } else {
+            for (let i = 0; i < 10; i++) {
+                if(stopFlag){
+                    break;
+                }
+                getTextAndPredict();
+                await sleep(3000);
+            }
+        }
+        stopFlag=false;
+    });
 
-    console.table(topKWords);
+    document.getElementById("stopBtn").addEventListener("click", async () => {
+        console.log("stop");
+        stopFlag=true;
+    });
+
     createChart();
 };
 

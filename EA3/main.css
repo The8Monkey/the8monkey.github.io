@@ -6,6 +6,7 @@ body {
     margin: 0;
     background-color: #0d0e0dc7;
     color: #ffffff;
+    font-size: large;
 }
 
 .header {
@@ -148,18 +149,18 @@ button {
     }
 }
 
-p{
+p {
     margin: 1%;
 }
 
-#tfjs-visor-container{
+#tfjs-visor-container {
     color: #000;
 }
 
-#discussion-documentation{
+#discussion-documentation {
     /* border:1px solid #ccc;  */
-    padding:2%; 
-    margin-top:30px;
+    padding: 2%;
+    margin-top: 30px;
 }
 
 .row {
@@ -184,3 +185,10 @@ p{
     box-sizing: border-box;
 }
 
+#textarea {
+    margin-left: 10px;
+}
+
+#error {
+    color: #fd5e5e;
+}

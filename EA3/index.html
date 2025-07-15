@@ -9,11 +9,11 @@
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-vis@latest"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-vis@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-converter"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/handpose"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/handpose"></script> -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@latest"></script>
     <!-- <script src="loadText.js"></script> -->
     <!-- <script src="loadOtherText.js"></script> -->
@@ -21,9 +21,23 @@
 
 <body>
     <h1>Train your LSTM Language Model</h1>
+    <div class="topnav">
+        <a href="/index.html">Home</a>
+    </div>
+    <div class="row">
 
-    <textarea id="textarea" rows="4" cols="50"></textarea>
-    <button id="genBtn">Text generieren</button>
+        <div class="col">
+            <p id="error"></p>
+            <textarea id="textarea" rows="10" cols="70"></textarea><br>
+            <button id="genBtn">Vorhersage</button>
+            <button id="nextBtn">Weiter</button>
+            <button id="autoBtn">Auto</button>
+            <button id="stopBtn">Stopp</button>
+        </div>
+        <div class="col">
+            <div id="predictionText"></div>
+        </div>
+    </div>
 
 
 
@@ -31,7 +45,7 @@
         <h2>Dokumentation</h2>
         <h3>Training</h3>
         <p>Für das Training wurden die Werte in der folgenden Tabelle genutzt. Nach dem Training wurde das Model
-            gespeichert und mit weiteren Werten trainiert.</p>
+            gespeichert und mit mehr Werten trainiert.</p>
 
         <table border="1" cellpadding="8" cellspacing="0">
             <thead>
@@ -158,28 +172,37 @@
 
         <h3>Vorhersage</h3>
         <p>Mit den Testsatz "die Mundöffnung und die damit" sollte die vorhersage im besten Fall "zusammenhängende"
-            sein. Aus dem folgenden Diagramm ist ersichtlich das bei 20 Vorhersagen die genauigkeit auch nicht gerade
-            groß ist. Daher lässt sich daraus schließen, dass das Model Overfittet ist. </p>
+            sein. Leider war diese Vorhersage nicht unter top 100 Vorhersagen. In den folgenden Diagramm sind die
+            Top 20
+            Vorhersagen mit der Wahrscheinlichkeit aufgelistet.</p>
         <canvas id="barchartTestk20"></canvas>
 
         <h3>Weitere Anmerkungen zu den Daten und Learning</h3>
-        <p>Es konnten nicht alle Daten der Quelle genutzt wernden weil Tensoflow JS nicht alle Daten verarbeiten konnte
-            da dies ein fehler gab. Die Lösung daüfr wäre das Modell in Batches zu Trainieren, dies wurde auch versucht
-            aber leider sind dort weitere Fehler aufgetreten.
+        <p>Es konnten nicht alle Daten der Quelle genutzt wernden weil Tensorflow JS nicht alle Daten verarbeiten
+            konnte
+            da dies ein Fehler gab.
+            Die Lösung dafür wäre das Modell in Batches zu trainieren, dies wurde auch versucht
+            aber leider sind dort weitere Fehler aufgetreten, weswegen mit nur einer Teilmenge der Daten trainiert
+            wurde.
             <br>
             <br>
-            Wärend des trainings waren die bereits leicht andeutet. Um ein besseres Modell zu erstellen und zu
-            trainieren unter Verwendung eines earlyStopping Callbacks um Overfitting zu verhindern. Während des
-            Trainings muss stehts darauf geachtet werden das Overfitting frühzeitig verhindert wird.
+            Wärend des Trainings war es schon zu erkennen, dass das Modell sich leicht Richtung Overfitting bewegt.
+            Um
+            ein besseres Modell zu erstellen und zu trainieren unter Verwendung eines earlyStopping Callbacks um
+            Overfitting zu verhindern. Während des Trainings muss stehts darauf geachtet werden das Overfitting
+            frühzeitig verhindert wird. Auch das splitten der Daten in für eine Validierung und das Anzeigen des
+            Graphs.
             <br>
             <br>
-            Auch wurde der Adam mit einer Lernratge von 0.01, welche sich während des Trainings als zu groß erwiesen hat
-            und auf 0.001 angepasst werden musste.
+            Auch wurde der Adam mit einer Lernratge von 0.01, welche sich während des Trainings als zu groß erwiesen
+            hat
+            und auf 0.001 angepasst wurde. Dadurch wurden wesentlich bessere Ergebnisse erzielt.
         </p>
 
         <h3>Technische Dokumentation</h3>
         <ul>
-            <li><strong>TensorFlow.js:</strong> Wird verwendet, um neuronale Netzwerke zu definieren, zu trainieren und
+            <li><strong>TensorFlow.js:</strong> Wird verwendet, um neuronale Netzwerke zu definieren, zu trainieren
+                und
                 Modelle zu speichern bzw. zu laden.</li>
             <li><strong>tfjs-vis:</strong> Visualisierung während des Trainings.</li>
             <li><strong>chart.js:</strong> Visualisierung der Daten.</li>
