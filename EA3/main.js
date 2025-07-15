@@ -598,9 +598,9 @@ const main = async () => {
         makePrediction(textarea.value.toLowerCase());
     });
 
-    document
-        .getElementById("nextBtn")
-        .addEventListener("click", async () => {});
+    document.getElementById("nextBtn").addEventListener("click", async () => {
+        getTextAndPredict();
+    });
 
     document.getElementById("autoBtn").addEventListener("click", async () => {
         const textarea = document.getElementById("textarea");
@@ -610,19 +610,19 @@ const main = async () => {
                 "Bitte geben Sie 5 oder mehr Wörter ein.";
         } else {
             for (let i = 0; i < 10; i++) {
-                if(stopFlag){
+                if (stopFlag) {
                     break;
                 }
                 getTextAndPredict();
                 await sleep(3000);
             }
         }
-        stopFlag=false;
+        stopFlag = false;
     });
 
     document.getElementById("stopBtn").addEventListener("click", async () => {
         console.log("stop");
-        stopFlag=true;
+        stopFlag = true;
     });
 
     createChart();
