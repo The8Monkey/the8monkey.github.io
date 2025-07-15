@@ -177,8 +177,31 @@
             Vorhersagen mit der Wahrscheinlichkeit aufgelistet.</p>
         <canvas id="barchartTestk20"></canvas>
 
+        <h3>Einschätzung des Models</h3>
+        <h4>Positiv:</h4>
+        <ul>
+            <li><b>Wortschatz passt zur Domäne: </b>Wörter wie „Wassermilben“, „Gattung“, „Schwimmen“, „Organe“ zeigen,
+                dass
+                dein Modell Inhalte aus dem Buch wirklich aufgenommen hat.</li>
+            <li><b>Grammatikalische Muster erkennbar: </b>Satzteile wie „die unterseite schwimmen zwei milben“ folgen
+                zumindest strukturell deutschsprachigen Satzmustern.</li>
+            <li><b>Längere Satzkonstruktionen: </b>Das Modell erzeugt eine fortlaufende Textkette und verliert nicht
+                direkt den Faden – ein gutes Zeichen für sequenzielle Kohärenz.</li>
+        </ul>
+        <h4>Verbesserungswürdig:</h4>
+        <ul>
+            <li><b>Semantische Inkonsistenzen: </b>Phrasen wie „in wieder wir am die wollen“ oder „den in eine
+                wassermilben gattung sind“ ergeben wenig Sinn → deutet auf schwache semantische Generalisierung hin.
+            </li>
+            <li><b>Übermäßige Wiederholung funktionaler Wörter: </b>viele „der“, „die“, „in“, „von“, „und“ – das kann
+                auf Überanpassung an häufige Tokens oder fehlerhafte Gewichtung hindeuten.</li>
+            <li><b>Wortwahl wirkt fragmentiert: </b>Es fehlt ein klarer thematischer oder syntaktischer Fluss – der Text
+                wirkt wie ein Patchwork aus bekannten Begriffen.</li>
+        </ul>
+
         <h3>Weitere Anmerkungen zu den Daten und Learning</h3>
-        <p>Es konnten nicht alle Daten der Quelle genutzt wernden weil Tensorflow JS nicht alle Daten verarbeiten
+        <p>
+            Es konnten nicht alle Daten der Quelle genutzt wernden weil Tensorflow JS nicht alle Daten verarbeiten
             konnte
             da dies ein Fehler gab.
             Die Lösung dafür wäre das Modell in Batches zu trainieren, dies wurde auch versucht
