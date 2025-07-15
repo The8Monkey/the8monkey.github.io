@@ -172,8 +172,7 @@
 
         <h3>Vorhersage</h3>
         <p>Mit den Testsatz "die Mundöffnung und die damit" sollte die vorhersage im besten Fall "zusammenhängende"
-            sein. Leider war diese Vorhersage nicht unter top 100 Vorhersagen. In den folgenden Diagramm sind die
-            Top 20
+            sein. Leider war diese Vorhersage nicht unter top 100 Vorhersagen. In den folgenden Diagramm sind die Top 20
             Vorhersagen mit der Wahrscheinlichkeit aufgelistet.</p>
         <canvas id="barchartTestk20"></canvas>
 
@@ -201,25 +200,20 @@
 
         <h3>Weitere Anmerkungen zu den Daten und Learning</h3>
         <p>
-            Es konnten nicht alle Daten der Quelle genutzt wernden weil Tensorflow JS nicht alle Daten verarbeiten
-            konnte
-            da dies ein Fehler gab.
-            Die Lösung dafür wäre das Modell in Batches zu trainieren, dies wurde auch versucht
-            aber leider sind dort weitere Fehler aufgetreten, weswegen mit nur einer Teilmenge der Daten trainiert
-            wurde.
+            Während des Trainings stellt sich heraus, dass TensorflowJS nicht alle Daten verarbeiten konnte. Dieses
+            lässt sich hauptsächlich auf fehlende Ressourceen zurückführen. Eine mögliche Lösung ist es das Model in
+            mehreren Schritten zur trainieren. Der Versuch hat aber zu Folgefehlern geführt, die tief im Framework oder
+            erst nach langem Training aufgetaucht sind, sodass die Behebungsversuche abgebrochen werden mussten.
             <br>
             <br>
-            Wärend des Trainings war es schon zu erkennen, dass das Modell sich leicht Richtung Overfitting bewegt.
-            Um
-            ein besseres Modell zu erstellen und zu trainieren unter Verwendung eines earlyStopping Callbacks um
-            Overfitting zu verhindern. Während des Trainings muss stehts darauf geachtet werden das Overfitting
-            frühzeitig verhindert wird. Auch das splitten der Daten in für eine Validierung und das Anzeigen des
-            Graphs.
+            Während des Trainings war zu erkennen, dass das Model sich in die Richtung eines Overfittings bewegt. Um ein
+            besseres Modell zu trainieren wurde ein früherer Abbruch gewählt. Während des Trainings muss stets drauf
+            geachtet werden das Overfitting frühzeitig zu verhindern. Auch das Aufteilen der Daten für eine Validierung
+            und das Anzeigen des Graphs für die visuelle Kontrolle hat geholfen die Parameter zu optimieren.
             <br>
             <br>
-            Auch wurde der Adam mit einer Lernratge von 0.01, welche sich während des Trainings als zu groß erwiesen
-            hat
-            und auf 0.001 angepasst wurde. Dadurch wurden wesentlich bessere Ergebnisse erzielt.
+            Für die Adam Optimierung wurde eine Lernrate von 0.001 ausgewählt, weil sich die initiale Variante mit 0.01
+            sich als zu groß erwissen hat. Hierdurch wurden die Ergebnisse noch weiter verbessert.
         </p>
 
         <h3>Technische Dokumentation</h3>
