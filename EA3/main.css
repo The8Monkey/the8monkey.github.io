@@ -65,11 +65,11 @@ h2 {
 }
 
 .chart-container {
-    width: 100%;
-    max-width: 100%;
+    width: 49%;
+    max-width: 49%;
     /* border: 1px solid #ccc; */
-    padding: 10px;
     box-sizing: border-box;
+    background-color: #f3f3f3;
 }
 
 .loss-text {
@@ -155,3 +155,32 @@ p{
 #tfjs-visor-container{
     color: #000;
 }
+
+#discussion-documentation{
+    /* border:1px solid #ccc;  */
+    padding:2%; 
+    margin-top:30px;
+}
+
+.row {
+    display: flex;
+    margin: 0.5%;
+    margin-bottom: 30px;
+    margin-left: -0.5%;
+}
+
+.col {
+    flex: 1 1 50%; /* Flex-Item nimmt maximal 50% der Zeilenbreite ein */
+    box-sizing: border-box;
+    padding: 10px;
+    min-width: 300px; /* Optional: Minimale Breite, damit bei sehr schmalen Bildschirmen automatisch umgebrochen wird */
+}
+
+.chart-container {
+    width: 100%;
+    max-width: 100%;
+    /* border: 1px solid #ccc; */
+    padding: 10px;
+    box-sizing: border-box;
+}
+

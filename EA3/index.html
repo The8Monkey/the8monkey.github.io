@@ -5,7 +5,7 @@
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Regression</title>
+    <title>LSTM</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
@@ -14,21 +14,181 @@
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-converter"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/handpose"></script>
-
-    <script src="loadText.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@latest"></script>
+    <!-- <script src="loadText.js"></script> -->
+    <!-- <script src="loadOtherText.js"></script> -->
 </head>
 
 <body>
     <h1>Train your LSTM Language Model</h1>
-    <div id="vis-container"></div>
-    <p>Klicke auf den Button, um das Modell zu trainieren und Text zu generieren:</p>
-    <button id="startBtn">Start</button>
-
-    <div id="output"><strong>Ausgabe:</strong><br /><span id="generatedText">Noch nichts generiert.</span></div>
 
     <textarea id="textarea" rows="4" cols="50"></textarea>
     <button id="genBtn">Text generieren</button>
 
+
+
+    <div id="discussion-documentation">
+        <h2>Dokumentation</h2>
+        <h3>Training</h3>
+        <p>Für das Training wurden die Werte in der folgenden Tabelle genutzt. Nach dem Training wurde das Model
+            gespeichert und mit weiteren Werten trainiert.</p>
+
+        <table border="1" cellpadding="8" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Parameter</th>
+                    <th>Wert</th>
+                    <th>Beschreibung</th>
+                    <th>Einfluss bei hohem Wert</th>
+                    <th>Einfluss bei niedrigem Wert</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Sequenzanzahl</td>
+                    <td>4899</td>
+                    <td>Anzahl der Trainingssequenzen</td>
+                    <td>Mehr Daten – längeres Training, bessere Generalisierung</td>
+                    <td>Weniger Vielfalt – höheres Overfitting-Risiko</td>
+                </tr>
+                <tr>
+                    <td>Tokenanzahl</td>
+                    <td>1555</td>
+                    <td>Größe des Vokabulars (Anzahl Tokens)</td>
+                    <td>Mehr Ausdruckskraft – schwierigeres Lernen</td>
+                    <td>Begrenzter Wortschatz – geringere Modelltiefe</td>
+                </tr>
+                <tr>
+                    <td>Sequenzlänge</td>
+                    <td>6</td>
+                    <td>Länge der Eingabesequenz</td>
+                    <td>Mehr Kontext – höherer Speicherbedarf</td>
+                    <td>Weniger Kontext – weniger präzise Vorhersagen</td>
+                </tr>
+                <tr>
+                    <td>Units</td>
+                    <td>400</td>
+                    <td>LSTM-Neuronen (versteckte Einheiten)</td>
+                    <td>Mehr Kapazität – kann komplexe Muster lernen</td>
+                    <td>Schnelleres Training – evtl. zu wenig Lernfähigkeit</td>
+                </tr>
+                <tr>
+                    <td>Output Dim</td>
+                    <td>1000</td>
+                    <td>Größe des Embedding-/Dense-Outputs</td>
+                    <td>Höhere Repräsentationsqualität – langsamer</td>
+                    <td>Geringere Ausdrucksstärke – weniger semantische Tiefe</td>
+                </tr>
+                <tr>
+                    <td>Adam</td>
+                    <td>0.001</td>
+                    <td>Lernrate des Adam-Optimizers</td>
+                    <td>Schnelles Lernen – instabile Konvergenz möglich</td>
+                    <td>Stabiles Lernen – braucht mehr Epochen</td>
+                </tr>
+                <tr>
+                    <td>Epochs</td>
+                    <td>100</td>
+                    <td>Trainingsdurchläufe über alle Daten</td>
+                    <td>Tiefe Konvergenz – Gefahr von Overfitting</td>
+                    <td>Früher Abbruch – Modell evtl. nicht ausgereift</td>
+                </tr>
+                <tr>
+                    <td>Batch Size</td>
+                    <td>128</td>
+                    <td>Größe pro Trainingsbatch</td>
+                    <td>Stabilere Gradienten – langsame Updates</td>
+                    <td>Frequente Updates – potenziell schwankende Genauigkeit</td>
+                </tr>
+                <tr>
+                    <td>dropout</td>
+                    <td>0.3</td>
+                    <td>Ausblendwahrscheinlichkeit in Dense-Schichten</td>
+                    <td>Schützt vor Overfitting – kann zu wenig lernen</td>
+                    <td>Starkes Lernen – Gefahr von Überanpassung</td>
+                </tr>
+                <tr>
+                    <td>Recurrent Dropout</td>
+                    <td>0.2</td>
+                    <td>Ausblendwahrscheinlichkeit in rekurrenten Zellen</td>
+                    <td>Robustere LSTM-Struktur – langsames Lernen</td>
+                    <td>Schnelle LSTM-Antworten – sensibler für Überanpassung</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="row">
+            <div class="col">
+                <canvas class="chart-container" id="t1-loss">
+            </div>
+            <div class="col">
+                <canvas class="chart-container" id="t1-acc">
+            </div>
+        </div>
+
+        <p>2. Training mit 10050 Sequenzen und 2470 Tokens</p>
+        <div class="row">
+            <div class="col">
+                <canvas class="chart-container" id="t2-loss">
+            </div>
+            <div class="col">
+                <canvas class="chart-container" id="t2-acc">
+            </div>
+        </div>
+
+        <p>3. Training mit 13703 Sequenzen und 3086 Tokens</p>
+        <div class="row">
+            <div class="col">
+                <canvas class="chart-container" id="t3-loss">
+            </div>
+            <div class="col">
+                <canvas class="chart-container" id="t3-acc">
+            </div>
+        </div>
+
+        <p>4. Training mit 20780 Sequenzen und 3858 Tokens</p>
+        <div class="row">
+            <div class="col">
+                <canvas class="chart-container" id="t4-loss">
+            </div>
+            <div class="col">
+                <canvas class="chart-container" id="t4-acc">
+            </div>
+        </div>
+
+        <h3>Vorhersage</h3>
+        <p>Mit den Testsatz "die Mundöffnung und die damit" sollte die vorhersage im besten Fall "zusammenhängende"
+            sein. Aus dem folgenden Diagramm ist ersichtlich das bei 20 Vorhersagen die genauigkeit auch nicht gerade
+            groß ist. Daher lässt sich daraus schließen, dass das Model Overfittet ist. </p>
+        <canvas id="barchartTestk20"></canvas>
+
+        <h3>Weitere Anmerkungen zu den Daten und Learning</h3>
+        <p>Es konnten nicht alle Daten der Quelle genutzt wernden weil Tensoflow JS nicht alle Daten verarbeiten konnte
+            da dies ein fehler gab. Die Lösung daüfr wäre das Modell in Batches zu Trainieren, dies wurde auch versucht
+            aber leider sind dort weitere Fehler aufgetreten.
+            <br>
+            <br>
+            Wärend des trainings waren die bereits leicht andeutet. Um ein besseres Modell zu erstellen und zu
+            trainieren unter Verwendung eines earlyStopping Callbacks um Overfitting zu verhindern. Während des
+            Trainings muss stehts darauf geachtet werden das Overfitting frühzeitig verhindert wird.
+            <br>
+            <br>
+            Auch wurde der Adam mit einer Lernratge von 0.01, welche sich während des Trainings als zu groß erwiesen hat
+            und auf 0.001 angepasst werden musste.
+        </p>
+
+        <h3>Technische Dokumentation</h3>
+        <ul>
+            <li><strong>TensorFlow.js:</strong> Wird verwendet, um neuronale Netzwerke zu definieren, zu trainieren und
+                Modelle zu speichern bzw. zu laden.</li>
+            <li><strong>tfjs-vis:</strong> Visualisierung während des Trainings.</li>
+            <li><strong>chart.js:</strong> Visualisierung der Daten.</li>
+            <li>Als Trainingsdaten wurden "Die Tier- und Pflanzenwelt des Süsswassers : Einführung in das Studium
+                derselben" genutzt.</li>
+        </ul>
+    </div>
+    <!-- 
+    <script src="tokenizer.js"></script> -->
     <script src="main.js"></script>
 </body>
 
